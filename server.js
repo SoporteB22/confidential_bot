@@ -1,8 +1,10 @@
 import express from "express";
-import bodyParser from "body-parser";
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
+
+// Middleware actualizado
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.post("/confidential", (req, res) => {
   try {
@@ -21,7 +23,7 @@ app.post("/confidential", (req, res) => {
 
 app.get("/", (req, res) => res.send("SpoilerBot activo ✅"));
 
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor escuchando en puerto ${PORT}`));
 
 
