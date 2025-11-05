@@ -21,7 +21,7 @@ app.post("/confidential", (req, res) => {
 
 app.get("/", (req, res) => res.send("SpoilerBot activo ✅"));
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Servidor escuchando en puerto ${PORT}`));
 
 
