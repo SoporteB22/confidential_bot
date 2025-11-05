@@ -1,15 +1,18 @@
 import express from "express";
+import querystring from "querystring";
 
 const app = express();
+
+// Necesario para Slack slash commands e interacciones
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Slash command
+// Comando principal
 app.post("/confidential", (req, res) => {
   const text = req.body.text || "(sin texto)";
   const user = req.body.user_name || "alguien";
 
-  // Mensaje principal con botón
+  // Enviamos un bloque con botón
   res.json({
     response_type: "in_channel",
     blocks: [
@@ -27,7 +30,7 @@ app.post("/confidential", (req, res) => {
             type: "button",
             text: {
               type: "plain_text",
-              text: "👁 Mostrar mensaje confidencial"
+              text: "👁 Ver mensaje"
             },
             action_id: "show_confidential",
             value: text
@@ -38,20 +41,29 @@ app.post("/confidential", (req, res) => {
   });
 });
 
-// Evento de interacción (cuando alguien pulsa el botón)
+// Endpoint de interacción (el botón)
 app.post("/interact", (req, res) => {
-  const payload = JSON.parse(req.body.payload);
-  const text = payload.actions[0].value;
+  try {
+    // Slack manda el payload como texto urlencoded
+    const payload = JSON.parse(req.body.payload);
+    const action = payload.actions[0];
+    const text = action.value;
 
-  // Respuesta efímera (solo visible para quien hizo clic)
-  res.json({
-    response_type: "ephemeral",
-    text: `💬 *Mensaje confidencial:* ${text}`
-  });
+    // Respondemos con mensaje efímero
+    res.json({
+      response_type: "ephemeral",
+      text: `💬 *Mensaje confidencial:* ${text}`
+    });
+  } catch (err) {
+    console.error("Error en /interact:", err);
+    res.status(200).send("Error procesando interacción 😅");
+  }
 });
 
+// Test básico
 app.get("/", (req, res) => res.send("🤖 SpoilerBot activo ✅"));
 
+// Keep-alive (para Render)
 setInterval(() => {
   fetch("https://confidential-bot.onrender.com/")
     .then(() => console.log("Keep-alive ping enviado 🚀"))
@@ -60,5 +72,3 @@ setInterval(() => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor escuchando en puerto ${PORT} ✅`));
-
-
