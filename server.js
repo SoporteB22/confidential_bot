@@ -5,7 +5,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Ruta principal del comando /spoiler
-app.post("/spoiler", (req, res) => {
+app.post("/confidential", (req, res) => {
   const text = req.body.text || "(sin texto)";
   const user = req.body.user_name;
 
