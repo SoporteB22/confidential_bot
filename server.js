@@ -7,13 +7,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Ruta principal del comando /spoiler
 app.post("/confidential", (req, res) => {
   const text = req.body.text || "(sin texto)";
-  const user = req.body.user_name;
+  const user = req.body.user_name || "alguien";
 
+  // Responder inmediatamente
   res.json({
-    response_type: "in_channel", // visible para todos
-    text: `🤫 *Spoiler oculto de ${user}:*\n> ||${text}||`
+    response_type: "in_channel",
+    text: `🤫 *Mensaje confidencial de ${user}:*\n> ||${text}||`
   });
 });
+
 
 // Ruta de prueba opcional
 app.get("/", (req, res) => {
